@@ -1,0 +1,5 @@
+par(mfrow=c(2,2))
+plot(r17, main="True color 2017")
+plot(r17f, main="False color 2017")
+plot(r23, main="True color 2023")
+plot(r23f, main="False color 2023")
