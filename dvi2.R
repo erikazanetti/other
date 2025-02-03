@@ -1,0 +1,5 @@
+par(mfrow=c(2,2))
+plot(dvi17, col=cl, main="DVI 2017")
+plot(dvi23, col=cl, main="DVI 2023")
+plot(dvi17, col=clv, main="DVI 2017 (viridis)")
+plot(dvi23, col=clv, main="DVI 2023 (viridis)")
