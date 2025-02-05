@@ -1,3 +1,6 @@
+# Install required packages if not already installed
+install.packages(c("terra", "ggplot2", "patchwork", "viridis", "devtools"))
+
 # Load the packages
 library(terra)      # For handling raster data (e.g., satellite images)
 library(ggplot2)    # For creating graphs
