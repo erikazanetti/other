@@ -1,0 +1,220 @@
+\documentclass{beamer} 
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetheme{Frankfurt}
+\usecolortheme{spruce}
+ 
+\title{TEMPORAL ANALYSIS OF DEFORESTATION IN AN AREA IN RONDÔNIA}
+\institute{
+    \includegraphics[width=0.37\linewidth]{map_general.jpg}
+    \vspace{0.25cm}
+    \\ github.com/erikazanetti
+    \\ A.Y. 2024-2025
+    }
+    \date{}
+    
+
+\begin{document}
+
+\maketitle
+
+\AtBeginSection[]
+    {
+    \begin{frame}
+    \frametitle{Summary}
+    \tableofcontents[currentsection]
+    \end{frame}
+    }
+
+\section{Area}
+
+\begin{frame}{The Rondônia area}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{map_world.jpg}
+    \end{figure}
+     \begin{itemize}
+        \item Area: 237,591 km² 
+        \item Original forest area (1500): 211,071 km²
+        \item Current forest area (2020): 121,382 km² (51.09\% of Rondônia)
+        \item Accumulated deforestation (2001-2019): 31,660 km²
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}{Area of study}
+    \begin{itemize}
+        \item Area of study: \(\sim4100\) km² (1.73\% of Rondônia)
+        \item Period: 2017-2023
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{2023-06-27-00_00_2023-06-27-23_59_Sentinel-2_L2A_True_color.jpg}
+        \caption{Area of study in June 2023}
+    \end{figure}
+    
+\end{frame}
+
+\section{Objective}
+    \begin{frame}{Objective}
+    Compare the forest loss rate of the area studied with the general rates of Rondônia. 
+    \end{frame}
+
+\section{Methods}
+
+\begin{frame}{Packages used}
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, keywordstyle=\color{RoyalBlue}, backgroundcolor=\color{white}]{packages.R}
+\end{frame}
+
+\begin{frame}{Images used}
+    \begin{itemize}
+        \item Downloaded from the Copernicus browser \url{https://browser.dataspace.copernicus.eu/}
+        \item 4 images: 2 images from 2017 and 2 images from 2023 \\(true color  and false color)
+    \end{itemize}
+\end{frame}
+
+\section{Analysis}
+
+\begin{frame}{Importing images}
+\scriptsize{First, we set the working directory, then we import the images for the years 2017 and 2023, while assigning them to an object.}
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white}, numberstyle=\tiny\color{Blue}, showspaces=false, keywordstyle=\color{RoyalBlue}, breaklines=true, showstringspaces=false]{importing images.R} \  
+    \scriptsize{After importing all the images, let's plot them all together in a multiframe.}
+   \begin{minipage}{0.45\textwidth} \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white}, showstringspaces=false]{plotTF.R}
+   \end{minipage}
+   \begin{minipage}{0.48\textwidth}
+    \begin{figure}
+        \includegraphics[width=0.9\linewidth]{T_F_color.png}
+    \end{figure}
+    \end{minipage}    
+\end{frame}
+
+\begin{frame}{Classifying the images}
+    Assigning red, green and blue bands of 2017's true color's image and 2017's false color's NIR band to their relative objects.
+    Uniting all the bands in one element. 
+    \\ Using the function im.classify() of the imageRy package to classify the images into 2 clusters (cleared forest and original forest)
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white}]{class17.R}
+    \bigskip
+    Doing the same process for 2023's images.
+\end{frame}
+
+\begin{frame}{Classifying the images}
+    Plot the classified images of 2017 and 2023 in a multiframe using colors from the viridis palette.
+    \bigskip
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white}]{class.R}
+    \begin{figure}
+        \includegraphics[width=1.0\linewidth]{c1723.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Classifying the images}
+    Calculating the frequency and percentage of each class (cleared fores and original forest) for both 2017 and 2023.
+    \\ Then calculating the forest loss percentage between 2017 and 2023.
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white}]{perc.R}
+    A 3\% of forest loss is calculated.
+\end{frame}
+
+\begin{frame}{Classifying the images}
+    To make it even clearer, we can show the differences through bar graphs. 
+    \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{bar.R}
+\end{frame}
+
+\begin{frame}{Classifying the images}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\linewidth]{ggplot.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+    DVI and NDVI are used to monitor vegetation health and density.
+    \\ Analyzing DVI first.
+    \\ We can create a color scale from black to white to red with 100 as gradient.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true]{dvi.R}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+    Then, we plot the results using the previously created palette and using the viridis palette.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{dvi2.R}
+     \begin{figure}
+         \centering
+         \includegraphics[width=0.65\linewidth]{dvi17-23.png}
+     \end{figure}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+   Now we can calculate the NDVI by doing (NIR-Red)/(NIR+Red).
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{NDVI.R}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+    We plot the results using the previously created palette and using the viridis palette.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{ndvi2.R}
+     \begin{figure}
+         \centering
+         \includegraphics[width=0.65\linewidth]{ndvi17-23.png}
+     \end{figure}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+    NDVI difference:
+    \\ \begin{itemize}
+        \item Positive values:  vegetation improved;
+        \item Negative values: vegetation worsened/decreased.
+    \end{itemize} 
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{difndvi.R}
+     \begin{figure}
+         \centering
+         \includegraphics[width=0.9\linewidth]{diffndvi.png}
+     \end{figure}
+\end{frame}
+
+\begin{frame}{DVI and NDVI}
+    Visualizing NDVI difference through histograms for 2017 and 2023.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{histt.R}
+     \begin{figure}
+         \centering
+         \includegraphics[width=0.65\linewidth]{hist.png}
+     \end{figure}
+\end{frame}
+
+\begin{frame}{PCA analysis for spatial variability}
+    \small{First, we calculate the PCA for 2017 and find the percentage of variability explained by each axis.
+    \\ Then, we combine PC1 and PC2, because together they explain over 89\% of the variability.
+    \\Finally, we calculate the standard deviation (SD) of the combined principal components (PC1 and PC2) from the PCA analysis, using a moving window (3x3 grid) to smooth the results. The focal() function applies the SD operation over the window.}
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{pca17.R}
+\end{frame}
+
+\begin{frame}{PCA analysis for spatial variability}
+    We do the same process for 2023.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{pca23.R}
+\end{frame}
+
+\begin{frame}{PCA analysis for spatial variability}
+    The results of the standard deviation (spatial variability) for both 2017 and 2023 are visualized side-by-side.
+     \lstinputlisting[basicstyle=\ttfamily\tiny,language=R, commentstyle=\color{darkgray}, frame=single, stringstyle=\color{RoyalBlue}, backgroundcolor=\color{white},  breaklines=true, showstringspaces=false]{pcaplot.R}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.9\linewidth]{pcafig.png}
+     \end{figure}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusions}
+Comparing these values, we can infer that your area might not be as severely affected as the overall state of Rondônia:
+    \begin{itemize}
+        \item Rondônia's average annual forest loss (2001-2019) = 1.02\% per year
+        \item Studied area’s annual forest loss (2018-2023) = 0.6\% per year.
+    \end{itemize}
+The studied area has experienced less deforestation per year compared to the broader trends observed in Rondônia from 2001 to 2019. \\However, it’s still important to understand the larger dynamics, as deforestation trends can vary significantly within smaller areas depending on the local causes (e.g., land use, agriculture, etc.).
+\end{frame}
+
+\begin{frame}{Sources}
+    \begin{itemize}
+        \item \url{https://forestchampions.org/jxd_reports/en_Rond\%C3\%B4nia_Brazil.pdf}
+        \item \url{https://www.globalforestwatch.org/}
+    \end{itemize}
+\end{frame}
+
+\end{document}
